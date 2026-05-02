@@ -1,25 +1,5 @@
 # Proveedores
-# skip_if_exists: true = si existe (por email), se omite
-# working_plan: "inherit" = hereda el plan global de la empresa
-# services: lista de nombres de servicios (deben existir en services.yml)
+# Dejar vacío hasta que se necesiten configurar.
+# Solo tú (admin) gestionas la agenda por ahora.
 
-providers:
-  - first_name: "Harold"
-    last_name: "Navía Fernández"
-    email: "harold.navia@tecnocondor.dev"
-    services:
-      - "Reunión de descubrimiento"
-      - "Demostración técnica"
-      - "Sesión de propuesta"
-      - "Reunión de proyecto"
-      - "Code review"
-      - "Soporte puntual"
-    working_plan: "inherit"
-    skip_if_exists: true
-  - first_name: "Valeria"
-    last_name: "Navía"
-    email: "valeria.navia@tecnocondor.dev"
-    services:
-      - "Soporte puntual"
-    working_plan: "inherit"
-    password: "changeme123"
+providers: []

@@ -16,8 +16,7 @@ scripts/
 ├── working_plan.yml     # Horario global de la empresa
 ├── holidays.yml         # Feriados (excepciones al plan)
 ├── service_categories.yml  # Categorías de servicios
-├── services.yml         # Catálogo de servicios
-└── providers.yml        # Proveedores
+└── services.yml         # Catálogo de servicios
 ```
 
 ## Prerrequisitos
@@ -85,82 +84,22 @@ El script muestra el progreso con colores:
 
 ## Orden de aplicación
 
-1. **Working Plan** — Horario global (L-V 09:00-18:00, break 13:00-14:00, fines de semana cerrado)
+1. **Working Plan** — Horario global
 2. **Categorías** — Comercial, Técnico, Soporte
-3. **Servicios** — 6 servicios con duración y descripción
-4. **Proveedores** — Harold (skip si existe), Valeria (nuevo)
-5. **Feriados** — 8 feriados bolivianos 2026 para todos los proveedores
+3. **Servicios** — Con nombre, duración y categoría
 
-## Agregar nuevos recursos
-
-### Nuevo servicio
-
-Editar `../config/services.yml`:
+## Formato de servicios
 
 ```yaml
 services:
-  - name: "Nuevo Servicio"
-    duration: 45
-    category: "Comercial"
-    description: "Descripción que verá el cliente"
-    buffers:
-      before: 15
-      after: 15
-    attendants_number: 1
-    is_private: false
+  - name: "Nombre del servicio"
+    category: "Nombre categoría"     # OBLIGATORIO
+    duration: 30                     # minutos
 ```
 
-### Nueva categoría
-
-Editar `../config/service_categories.yml`:
-
-```yaml
-categories:
-  - name: "Nueva Categoría"
-    description: "Descripción"
-    color: "#FF5733"
-```
-
-### Nuevo proveedor
-
-Editar `../config/providers.yml`:
-
-```yaml
-providers:
-  - first_name: "Nombre"
-    last_name: "Apellido"
-    email: "email@ejemplo.com"
-    services:
-      - "Nombre del Servicio"
-    working_plan: "inherit"
-    password: "temporal123"
-```
-
-### Nuevos feriados
-
-Editar `../config/holidays.yml`. Para un solo día:
-
-```yaml
-holidays:
-  - name: "Feriado nuevo"
-    date: "2026-03-15"
-```
-
-Para un rango (como Carnaval):
-
-```yaml
-  - name: "Carnaval"
-    date_start: "2026-02-16"
-    date_end: "2026-02-17"
-```
+La categoría debe coincidir con un nombre definido en `service_categories.yml`.
 
 ## Idempotencia
 
 El script es idempotente: puede ejecutarse múltiples veces sin duplicar
 recursos. Usa el patrón GET → indexar → CREATE/UPDATE/SKIP.
-
-## Notas
-
-- Los feriados se aplican como `working_plan_exceptions` (día cerrado) a todos los proveedores
-- Harold Navía tiene `skip_if_exists: true` — se omite si ya existe
-- Los servicios sin categoría válida muestran un WARN pero no fallan

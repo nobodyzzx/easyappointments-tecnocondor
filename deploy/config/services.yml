@@ -1,61 +1,23 @@
 # Catálogo de servicios
-# category: debe coincidir con el nombre en service_categories.yml
+# category: debe coincidir con el nombre en service_categories.yml (OBLIGATORIO)
 # duration: en minutos
-# buffers: tiempo antes/después del servicio para preparación
-# attendants_number: cantidad máxima de clientes por cita
 
 services:
   - name: "Reunión de descubrimiento"
-    duration: 30
     category: "Comercial"
-    description: "Conversamos sobre tus necesidades y objetivos para entender cómo podemos ayudarte"
-    buffers:
-      before: 15
-      after: 15
-    attendants_number: 1
-    is_private: false
+    duration: 30
   - name: "Demostración técnica"
+    category: "Comercial"
     duration: 45
-    category: "Comercial"
-    description: "Te mostramos nuestras capacidades técnicas con ejemplos prácticos"
-    buffers:
-      before: 15
-      after: 15
-    attendants_number: 1
-    is_private: false
   - name: "Sesión de propuesta"
-    duration: 60
     category: "Comercial"
-    description: "Presentamos una propuesta detallada adaptada a tus necesidades"
-    buffers:
-      before: 15
-      after: 15
-    attendants_number: 1
-    is_private: false
+    duration: 60
   - name: "Reunión de proyecto"
+    category: "Técnico"
     duration: 30
-    category: "Técnico"
-    description: "Seguimiento y coordinación de proyectos en curso"
-    buffers:
-      before: 15
-      after: 15
-    attendants_number: 1
-    is_private: false
   - name: "Code review"
-    duration: 60
     category: "Técnico"
-    description: "Revisión detallada de código con recomendaciones de mejora"
-    buffers:
-      before: 15
-      after: 15
-    attendants_number: 1
-    is_private: false
-  - name: "Soporte puntual"
     duration: 60
+  - name: "Soporte puntual"
     category: "Soporte"
-    description: "Asistencia técnica para resolver problemas específicos"
-    buffers:
-      before: 15
-      after: 15
-    attendants_number: 1
-    is_private: false
+    duration: 60

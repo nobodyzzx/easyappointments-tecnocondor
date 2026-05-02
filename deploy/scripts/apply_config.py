@@ -10,7 +10,6 @@ Orden de aplicación:
   2. holidays (feriados como working_plan_exceptions)
   3. service_categories
   4. services
-  5. providers
 
 Uso:
   pip install -r requirements.txt
@@ -122,7 +121,7 @@ def load_yaml(filename: str) -> dict:
 
 # ── 1. Working Plan ────────────────────────────────────────────────────────
 
-def apply_working_plan(client: APIClient, config: dict, do_update: bool) -> None:
+def apply_working_plan(client: APIClient, config: dict) -> None:
     plan = config["company_working_plan"]
     value = json.dumps(plan, ensure_ascii=False)
 
@@ -228,19 +227,11 @@ def apply_services(client: APIClient, config: dict, category_map: dict[str, int]
     for svc in services:
         name = svc["name"]
         cat_id = category_map.get(svc.get("category"))
-        buffers = svc.get("buffers", {})
 
         data = {
             "name": name,
             "duration": svc["duration"],
-            "description": svc.get("description", ""),
             "serviceCategoryId": cat_id,
-            "slotInterval": 15,
-            "attendantsNumber": svc.get("attendants_number", 1),
-            "isPrivate": svc.get("is_private", False),
-            "price": 0,
-            "currency": "",
-            "location": "",
         }
 
         if cat_id is None:
@@ -270,71 +261,6 @@ def apply_services(client: APIClient, config: dict, category_map: dict[str, int]
     return name_to_id
 
 
-# ── 5. Providers ───────────────────────────────────────────────────────────
-
-def apply_providers(
-    client: APIClient,
-    config: dict,
-    service_map: dict[str, int],
-    do_update: bool,
-) -> list[int]:
-    providers = config.get("providers", [])
-    existing = client.get("/api/v1/providers")
-    by_email = {p["email"]: p for p in existing}
-
-    admins = client.get("/api/v1/admins")
-    admin_emails = {a["email"]: a for a in admins}
-
-    created_ids: list[int] = []
-
-    for prov in providers:
-        email = prov["email"]
-        full_name = f"{prov['first_name']} {prov['last_name']}"
-        service_ids = [service_map[s] for s in prov.get("services", []) if s in service_map]
-
-        if email in by_email:
-            prov_id = by_email[email]["id"]
-            created_ids.append(prov_id)
-            log("SKIPPED", f"Proveedor '{full_name}' ya existe")
-        elif email in admin_emails:
-            admin = admin_emails[email]
-            admin_name = f"{admin['firstName']} {admin['lastName']}"
-            created_ids.append(-1)
-            log("SKIPPED", f"'{full_name}' ya existe como admin (ID: {admin['id']}). Crear como provider manualmente si se necesita")
-        else:
-            if client.dry_run:
-                log("CREATED", f"Proveedor '{full_name}' (dry-run)")
-                created_ids.append(-1)
-            else:
-                settings = build_provider_settings(prov, is_new=True)
-                data = {
-                    "firstName": prov["first_name"],
-                    "lastName": prov["last_name"],
-                    "email": email,
-                    "services": service_ids,
-                    "settings": settings,
-                }
-                result = client.post("/api/v1/providers", data)
-                prov_id = result["id"]
-                created_ids.append(prov_id)
-                log("CREATED", f"Proveedor '{full_name}' (ID: {prov_id})")
-
-    return created_ids
-
-
-def build_provider_settings(prov: dict, is_new: bool = False) -> dict:
-    settings = {
-        "username": prov["email"].split("@")[0],
-        "notifications": True,
-        "calendarView": "default",
-    }
-
-    if is_new:
-        settings["password"] = prov.get("password", "changeme123")
-
-    return settings
-
-
 # ── Principal ──────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -358,36 +284,20 @@ def main() -> None:
     print(f"{BOLD}  Easy!Appointments — Configuración automática [{mode}]{RESET}")
     print(f"{BOLD}{'=' * 60}{RESET}\n")
 
-    provider_ids: list[int] = []
-
     # 1. Working plan
-    print(f"{BOLD}[1/5] Working Plan{RESET}")
+    print(f"{BOLD}[1/3] Working Plan{RESET}")
     wp = load_yaml("working_plan.yml")
-    apply_working_plan(client, wp, args.update)
+    apply_working_plan(client, wp)
 
-    # 2. Categories (necesarias antes de services)
-    print(f"\n{BOLD}[2/5] Categorías{RESET}")
+    # 2. Categories
+    print(f"\n{BOLD}[2/3] Categorías{RESET}")
     cat_config = load_yaml("service_categories.yml")
     category_map = apply_categories(client, cat_config, args.update)
 
     # 3. Services
-    print(f"\n{BOLD}[3/5] Servicios{RESET}")
+    print(f"\n{BOLD}[3/3] Servicios{RESET}")
     svc_config = load_yaml("services.yml")
-    service_map = apply_services(client, svc_config, category_map, args.update)
-
-    # 4. Providers
-    print(f"\n{BOLD}[4/5] Proveedores{RESET}")
-    prov_config = load_yaml("providers.yml")
-    provider_ids = apply_providers(client, prov_config, service_map, args.update)
-
-    # 5. Holidays (después de tener proveedores)
-    print(f"\n{BOLD}[5/5] Feriados{RESET}")
-    hol_config = load_yaml("holidays.yml")
-    all_provider_ids = [p["id"] for p in client.get("/api/v1/providers")]
-    if all_provider_ids:
-        apply_holidays(client, hol_config, all_provider_ids)
-    else:
-        log("WARN", "Sin proveedores válidos para asignar feriados")
+    apply_services(client, svc_config, category_map, args.update)
 
     print(f"\n{BOLD}{'=' * 60}{RESET}")
     print(f"{BOLD}  Configuración completada [{mode}]{RESET}")
