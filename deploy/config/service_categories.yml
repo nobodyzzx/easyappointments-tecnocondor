@@ -1,0 +1,13 @@
+# Categorías de servicios
+# El color se usa para identificar visualmente los servicios de cada categoría
+
+categories:
+  - name: "Comercial"
+    description: "Servicios comerciales y de consultoría"
+    color: "#4A90D9"
+  - name: "Técnico"
+    description: "Servicios técnicos y de desarrollo"
+    color: "#2ECC71"
+  - name: "Soporte"
+    description: "Servicios de soporte y asistencia"
+    color: "#E67E22"

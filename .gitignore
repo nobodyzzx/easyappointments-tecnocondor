@@ -31,3 +31,10 @@
 /vendor/
 /metafile
 .DS_Store
+
+# Tecnocondor: config.php se gestiona en el host, no en Git
+/config.php
+
+# Tecnocondor: API keys y credenciales locales
+.env
+deploy/scripts/.env

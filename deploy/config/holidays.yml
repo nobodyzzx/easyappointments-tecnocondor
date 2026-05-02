@@ -1,0 +1,22 @@
+# Feriados Bolivia 2026
+# Cada feriado crea una working_plan_exception (día cerrado) para todos los proveedores
+# Los proveedores individuales pueden sobrescribir si necesitan trabajar en un feriado
+
+holidays:
+  - name: "Año Nuevo"
+    date: "2026-01-01"
+  - name: "Día del Estado Plurinacional"
+    date: "2026-01-22"
+  - name: "Carnaval"
+    date_start: "2026-02-16"
+    date_end: "2026-02-17"
+  - name: "Día del Trabajo"
+    date: "2026-05-01"
+  - name: "Año Nuevo Andino Amazónico"
+    date: "2026-06-21"
+  - name: "Día de la Independencia"
+    date: "2026-08-06"
+  - name: "Día de los Difuntos"
+    date: "2026-11-02"
+  - name: "Navidad"
+    date: "2026-12-25"

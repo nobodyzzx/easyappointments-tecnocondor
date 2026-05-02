@@ -1,0 +1,37 @@
+# Plan de trabajo global de la empresa
+# Los proveedores heredan este plan si no tienen uno personalizado
+# null = día cerrado
+
+company_working_plan:
+  monday:
+    start: "09:00"
+    end: "18:00"
+    breaks:
+      - start: "13:00"
+        end: "14:00"
+  tuesday:
+    start: "09:00"
+    end: "18:00"
+    breaks:
+      - start: "13:00"
+        end: "14:00"
+  wednesday:
+    start: "09:00"
+    end: "18:00"
+    breaks:
+      - start: "13:00"
+        end: "14:00"
+  thursday:
+    start: "09:00"
+    end: "18:00"
+    breaks:
+      - start: "13:00"
+        end: "14:00"
+  friday:
+    start: "09:00"
+    end: "18:00"
+    breaks:
+      - start: "13:00"
+        end: "14:00"
+  saturday: null
+  sunday: null
