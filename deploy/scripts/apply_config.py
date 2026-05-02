@@ -295,24 +295,7 @@ def apply_providers(
         if email in by_email:
             prov_id = by_email[email]["id"]
             created_ids.append(prov_id)
-            if prov.get("skip_if_exists"):
-                log("SKIPPED", f"Proveedor '{full_name}' marcado para omitir si existe")
-            elif do_update:
-                settings = build_provider_settings(prov)
-                data = {
-                    "firstName": prov["first_name"],
-                    "lastName": prov["last_name"],
-                    "email": email,
-                    "services": service_ids,
-                    "settings": settings,
-                }
-                if client.dry_run:
-                    log("UPDATED", f"Proveedor '{full_name}' (dry-run)")
-                else:
-                    client.put(f"/api/v1/providers/{prov_id}", data)
-                    log("UPDATED", f"Proveedor '{full_name}'")
-            else:
-                log("SKIPPED", f"Proveedor '{full_name}' ya existe")
+            log("SKIPPED", f"Proveedor '{full_name}' ya existe")
         elif email in admin_emails:
             admin = admin_emails[email]
             admin_name = f"{admin['firstName']} {admin['lastName']}"
